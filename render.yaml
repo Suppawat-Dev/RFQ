@@ -3,35 +3,17 @@ services:
     name: tooljet
     env: docker
     plan: free
-    image: tooljet/tooljet-ce:latest
+    dockerfilePath: ./Dockerfile
     healthCheckPath: /
     envVars:
-      # URL ภายนอกของ ToolJet
       - key: TOOLJET_HOST
-        value: "https://tooljet.onrender.com"   # เปลี่ยนเป็นโดเมนจริงภายหลังได้
-
-      # ความปลอดภัย (ใส่ค่าในตอน Deploy บน Render UI)
+        value: "https://tooljet.onrender.com"
       - key: LOCKBOX_MASTER_KEY
-        sync: false
-      - key: SECRET_KEY_BASE
-        sync: false
+        value: "your_lockbox_master_key"
       - key: DISABLE_TOOLJET_TELEMETRY
         value: "true"
 
-      # ========= ToolJet DB (เมทาดาต้า) =========
-      - key: TOOLJET_DB_HOST
-        value: "YOUR_PG_HOST"        # ใช้ Managed Postgres ของ Render
-      - key: TOOLJET_DB_PORT
-        value: "5432"
-      - key: TOOLJET_DB
-        value: "tooljet_db"          # สร้างตามข้อ 2 ด้านล่าง
-      - key: TOOLJET_DB_USER
-        value: "YOUR_PG_USER"
-      - key: TOOLJET_DB_PASS
-        sync: false
-
-      # ========= PostgREST (ใช้ DB เดียวกับ TOOLJET_DB) =========
-      - key: PGRST_JWT_SECRET
-        sync: false
-      - key: PGRST_DB_URI
-        sync: false   # ใส่ค่าตอน deploy รูปแบบ: postgres://USER:PASS@HOST:5432/tooljet_db
+databases:
+  - name: tooljet-db
+    plan: free
+    region: oregon

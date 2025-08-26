@@ -1,38 +1,36 @@
 services:
   - type: web
-    name: tooljet
-    runtime: image            # ใช้ runtime: image ตามสเปค Render
+    name: tooljet-app        # เปลี่ยนชื่อใหม่กันชนกับตัวเดิม
+    runtime: image           # << สำคัญ: ใช้อิมเมจสาธารณะ ไม่ build จาก Dockerfile
     image: tooljet/tooljet-ce:latest
-    plan: free                # ทดสอบเริ่ม free ได้
+    plan: free               # ทดสอบเริ่ม free ได้
     healthCheckPath: /
     envVars:
-      # URL ภายนอกของ ToolJet (เปลี่ยนทีหลังได้)
       - key: TOOLJET_HOST
-        value: "https://tooljet.onrender.com"
+        value: "https://tooljet-app.onrender.com"   # เปลี่ยนภายหลังได้
 
-      # ===== กรอกตอน Deploy (ห้าม commit ค่า) =====
-      - key: LOCKBOX_MASTER_KEY    # 32 ไบต์ hex -> openssl rand -hex 32
+      # ===== ให้กรอกตอน Deploy (ห้าม commit ค่า) =====
+      - key: LOCKBOX_MASTER_KEY     # 32-byte hex -> openssl rand -hex 32
         sync: false
-      - key: SECRET_KEY_BASE       # 64 ไบต์ hex -> openssl rand -hex 64
+      - key: SECRET_KEY_BASE        # 64-byte hex -> openssl rand -hex 64
         sync: false
       - key: DISABLE_TOOLJET_TELEMETRY
         value: "true"
 
-      # ===== ToolJet ใช้ Postgres ที่ "มีอยู่แล้ว" =====
-      # !! ชุดนี้คือ DB ภายในของ ToolJet เอง (metadata)
+      # ===== ฐานข้อมูลภายใน ToolJet (ใช้ Postgres "ตัวที่มีอยู่แล้ว") =====
       - key: PG_HOST
         value: "YOUR_EXISTING_PG_HOST"
       - key: PG_PORT
         value: "5432"
       - key: PG_DB
-        value: "tooljet_db"              # เราจะสร้าง DB นี้ใน instance เดิม
+        value: "tooljet_db"         # เราจะสร้าง DB นี้เพิ่มใน instance เดิม
       - key: PG_USER
         value: "YOUR_EXISTING_PG_USER"
       - key: PG_PASS
-        sync: false                      # รหัสของ user ข้างบน
+        sync: false                 # รหัสของ user ข้างบน
 
-      # ===== PostgREST (ใช้ DB เดียวกับ PG_DB) =====
-      - key: PGRST_JWT_SECRET            # 32 ไบต์ hex
+      # ===== PostgREST (ชี้ DB เดียวกับ PG_DB) =====
+      - key: PGRST_JWT_SECRET       # 32-byte hex -> openssl rand -hex 32
         sync: false
-      - key: PGRST_DB_URI                # ตัวอย่าง: postgres://USER:PASS@HOST:5432/tooljet_db
+      - key: PGRST_DB_URI           # ตัวอย่าง: postgres://USER:PASS@HOST:5432/tooljet_db
         sync: false

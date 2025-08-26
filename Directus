@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: directus
+    env: docker
+    plan: free
+    docker:
+      image: directus/directus:latest
+    healthCheckPath: /server/health
+    envVars:
+      - key: DB_CLIENT
+        value: "pg"
+      - key: DB_HOST
+        value: "YOUR_PG_HOST"
+      - key: DB_PORT
+        value: "5432"
+      - key: DB_DATABASE
+        value: "YOUR_DB_NAME"
+      - key: DB_USER
+        value: "YOUR_DB_USER"
+      - key: DB_PASSWORD
+        sync: false
+      - key: KEY
+        value: "change-this-key"
+      - key: SECRET
+        value: "change-this-secret"
+      - key: PUBLIC_URL
+        value: "https://directus.onrender.com"

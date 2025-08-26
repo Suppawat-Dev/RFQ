@@ -1,0 +1,46 @@
+services:
+  - type: web
+    name: tooljet
+    env: docker
+    plan: free
+    docker:
+      image: tooljet/tooljet-ce:latest
+    healthCheckPath: /
+    envVars:
+      # URL ภายนอกของ ToolJet
+      - key: TOOLJET_HOST
+        value: "https://tooljet.onrender.com"
+      # ความปลอดภัย
+      - key: LOCKBOX_MASTER_KEY
+        sync: false
+      - key: SECRET_KEY_BASE
+        sync: false
+      - key: DISABLE_TOOLJET_TELEMETRY
+        value: "true"
+      # *** แอปของคุณ (RFQ) ***
+      - key: PG_HOST
+        value: "YOUR_PG_HOST"
+      - key: PG_PORT
+        value: "5432"
+      - key: PG_DB
+        value: "rfq_prod"
+      - key: PG_USER
+        value: "YOUR_PG_USER"
+      - key: PG_PASS
+        sync: false
+      # *** DB ภายในของ ToolJet (เก็บ metadata, ToolJet DB, PostgREST) ***
+      - key: TOOLJET_DB_HOST
+        value: "YOUR_PG_HOST"
+      - key: TOOLJET_DB_PORT
+        value: "5432"
+      - key: TOOLJET_DB
+        value: "tooljet_db"
+      - key: TOOLJET_DB_USER
+        value: "YOUR_PG_USER"
+      - key: TOOLJET_DB_PASS
+        sync: false
+      # PostgREST (ใช้ DB ภายในเดียวกัน)
+      - key: PGRST_JWT_SECRET
+        sync: false
+      - key: PGRST_DB_URI
+        value: "postgres://YOUR_PG_USER:YOUR_PG_PASS@YOUR_PG_HOST:5432/tooljet_db"

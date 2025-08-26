@@ -2,36 +2,36 @@ services:
   - type: web
     name: tooljet
     env: docker
-    plan: free                        # ทดสอบเริ่มฟรีได้
+    plan: free                     # เริ่มทดสอบด้วย free ก่อน
     image: tooljet/tooljet-ce:latest
     healthCheckPath: /
     envVars:
-      # URL ภายนอกของ ToolJet
+      # URL ภายนอกของ ToolJet (แก้เป็นของคุณทีหลังได้)
       - key: TOOLJET_HOST
-        value: "https://tooljet.onrender.com"   # เปลี่ยนเป็นโดเมนจริงทีหลังได้
+        value: "https://tooljet.onrender.com"
 
-      # ===== คีย์ความปลอดภัย (กรอกตอน Deploy) =====
-      - key: LOCKBOX_MASTER_KEY
-        sync: false                   # ใส่ค่า 32 ไบต์ hex
-      - key: SECRET_KEY_BASE
-        sync: false                   # ใส่ค่า 64 ไบต์ hex
+      # ===== ใส่ตอน Deploy (ห้าม commit ค่าจริง) =====
+      - key: LOCKBOX_MASTER_KEY     # 32 ไบต์ hex: openssl rand -hex 32
+        sync: false
+      - key: SECRET_KEY_BASE        # 64 ไบต์ hex: openssl rand -hex 64
+        sync: false
       - key: DISABLE_TOOLJET_TELEMETRY
         value: "true"
 
       # ===== ToolJet DB (เมทาดาต้า) — ใช้ Postgres "ที่มีอยู่แล้ว" =====
       - key: TOOLJET_DB_HOST
-        value: "YOUR_EXISTING_PG_HOST"
+        value: "YOUR_EXISTING_PG_HOST"     # โฮสต์ของ Managed Postgres เดิม
       - key: TOOLJET_DB_PORT
         value: "5432"
       - key: TOOLJET_DB
-        value: "tooljet_db"           # เราจะสร้าง DB นี้เพิ่มใน instance เดิมด้านล่าง
+        value: "tooljet_db"                # เราจะสร้าง DB นี้เพิ่มใน instance เดิม (ข้อ B)
       - key: TOOLJET_DB_USER
         value: "YOUR_EXISTING_PG_USER"
       - key: TOOLJET_DB_PASS
-        sync: false                   # รหัสของ user ข้างบน
+        sync: false                        # รหัสของ user ข้างบน
 
       # ===== PostgREST (ใช้ DB เดียวกับ TOOLJET_DB) =====
-      - key: PGRST_JWT_SECRET
-        sync: false                   # 32 ไบต์ hex
-      - key: PGRST_DB_URI
-        sync: false                   # ใส่ตอน Deploy เช่น: postgres://USER:PASS@HOST:5432/tooljet_db
+      - key: PGRST_JWT_SECRET              # 32 ไบต์ hex
+        sync: false
+      - key: PGRST_DB_URI                  # ใส่ตอน Deploy: postgres://USER:PASS@HOST:5432/tooljet_db
+        sync: false
